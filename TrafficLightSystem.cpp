@@ -60,8 +60,17 @@ void TrafficLightSystem::handleVehicle(Vehicle* vehicle, int road)
     }
 
     // Handle normal vehicles
-    std::cout << "\n>>> Adding " << vehicle->getType() << " to Road " << road << ".\n";
-    queues[adjustedRoad].addVehicleToQueue(vehicle);
+    // Ignore vehicles with a currently green light
+    if (light->getSignalColor() == "Green")
+    {
+        std::cout << "Light is already green! Ignoring vehicle.";
+    }
+        // If the light isn't green, add it to a queue.
+    else
+    {
+        std::cout << "\n>>> Adding " << vehicle->getType() << " to Road " << road << ".\n";
+        queues[adjustedRoad].addVehicleToQueue(vehicle);
+    }
 
     int currentQueueLength = queues[adjustedRoad].getQueueLength();
     std::cout << ">>> Queue length for Road " << road << ": " << currentQueueLength << " vehicles.\n";
@@ -70,8 +79,7 @@ void TrafficLightSystem::handleVehicle(Vehicle* vehicle, int road)
     if (queues[adjustedRoad].isQueueFull())
     {
         std::cout << ">>> Queue is full on Road " << road << "! Turning the light green to clear traffic.\n";
-        light->changeToGreen();
-        queues[adjustedRoad].clearQueue();
+        handleFullQueue(road);
     }
 }
 
@@ -105,6 +113,8 @@ void TrafficLightSystem::setAllSignalsRed()
 // Changes the traffic light signals for a specific road pair (e.g., North-South or West-East)
 void TrafficLightSystem::changeSignalPair(int pair)
 {
+    errorHandler.generateError(); // Will create an error based on chance.
+
     if (pair == 1) // North-South signals
     {
         west.changeSignal("Red", errorHandler, eventFlag);
@@ -191,7 +201,23 @@ void TrafficLightSystem::handlePedestrian(char crosswalk)
 // Public method to trigger an error in the system
 void TrafficLightSystem::triggerError()
 {
-    std::cout << "Error triggered in the system!\n";
-    errorHandler.errorDetected(); // Trigger the error state in the error handler
-    setAllSignalsRed();          // Respond by setting all signals to red
+    errorHandler.generateError(); // Create an error based on chance.
+
+    // Handle the case that an error was created.
+    if (errorHandler.getErrorStatus())
+    {
+        std::cout << "Error triggered in the system!\n";
+        setAllSignalsRed();
+    }
+    // Handle the case that an error failed to create, but lights are already in "Error" mode.
+    if (!errorHandler.getErrorStatus() && north.getSignalColor() == "Blinking Red" && south.getSignalColor() == "Blinking Red" && west.getSignalColor() == "Blinking Red" && east.getSignalColor() == "Blinking Red")
+    {
+        std::cout << "Error has been fixed! Converting all lights to red.";
+        setAllSignalsRed();
+    }
+    // Handle the case that an error failed to create.
+    if (!errorHandler.getErrorStatus())
+    {
+        std::cout << "No error was generated. Systems are still operational.";
+    }
 }
