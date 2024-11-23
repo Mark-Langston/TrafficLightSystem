@@ -1,5 +1,5 @@
 /**
- * @brief Implements the behavior of individual traffic lights.
+ * Implements the behavior of individual traffic lights.
  *
  * Current Integration:
  * - The `TrafficLightSystem` class uses this file to control signal transitions.
