@@ -20,6 +20,9 @@ public:
     // Method to check if an error has been detected
     bool getErrorStatus();
 
+    // Method to set error status
+    void setError(bool parameter);
+
 private:
     bool error;          // Boolean to track the presence of an error
     std::string errorCode; // Stores the error code for detected issues
