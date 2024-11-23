@@ -11,12 +11,6 @@
  * - The error status (`getErrorStatus`) is used by the Traffic Light System to determine if
  *   the system is in an error state and to handle it accordingly (e.g., setting all signals to red).
  *
- * Unused Features:
- * - `generateError`: The generated error codes are only printed to the console and are
- *   not utilized for further decision-making or logged for debugging purposes.
- * - `errorDetected`: This function is used internally by `generateError` but is not independently
- *   invoked in the rest of the system for direct error probability checks.
- *
  */
 
 #include "ErrorHandler.h"
@@ -26,6 +20,7 @@ ErrorHandler::ErrorHandler()
 {
     error = false;
     errorCode = "No Error Detected\n";
+    srand(time(0)); // Set RNG seed.
 }
 
 // Determines if an error is detected.
