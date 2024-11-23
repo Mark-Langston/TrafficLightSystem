@@ -20,7 +20,7 @@
  * - Supports triggering errors through the ErrorHandler.
  *
  */
- 
+
 #include <iostream>
 #include <limits>
 #include "TrafficLightSystem.h"  // Header for the traffic light system
